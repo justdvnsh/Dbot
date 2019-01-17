@@ -7,8 +7,7 @@ Created on Thu Jan 17 20:16:26 2019
 
 import numpy as np
 import pandas as pd
-import re 
-import time
+from data-cleaning import clean_text
 
 lines = open('cornell movie-dialogs corpus/movie_lines.txt', encoding = 'utf-8', errors='ignore').read().split('\n')
 conversations = open('cornell movie-dialogs corpus/movie_conversations.txt', encoding = 'utf-8', errors='ignore').read().split('\n')
@@ -35,7 +34,50 @@ for conversation in conversation_ids:
         questions.append(id2lines[conversation[i]])
         answers.append(id2lines[conversation[i+1]])         
         
-
+# Cleaning the questions and answers
+clean_questions = [clean_text(question) for question in questions]
+clean_answer = [clean_text(answer) for answer in answers]
         
+# Creating a dictionary that maps each word with its frequency
+word2count = {}
+for question, answer in zip(clean_questions, clean_answer):
+    for word in question.split():
+        if word not in word2count:
+            word2count[word] = 1
+        else:
+            word2count[word] += 1
+    for word in answer.split():
+        if word not in word2count:
+            word2count[word] = 1
+        else:
+            word2count[word] += 1
+
+# Creating dictionaries that maps each word of questions and answers with a unique integer
+# The Word2count dict contains the words and their frequency , so we will only keep the words which
+# appear a certain number of times.
+MIN_WORD_FREQUENCY = 20
+word_number = 0
+questionswords2int = {}
+for word, count in word2count.items():
+    if count >= MIN_WORD_FREQUENCY:
+        questionswords2int[word] = word_number
+        word_number += 1
+word_number = 0
+answerswords2int = {}
+for word, count in word2count.items():
+    if count >= MIN_WORD_FREQUENCY:
+        answerswords2int[word] = word_number
+        word_number += 1
+
+
+
+
+
+
+
+
+
+
+
         
         
