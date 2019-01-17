@@ -68,13 +68,52 @@ for word, count in word2count.items():
     if count >= MIN_WORD_FREQUENCY:
         answerswords2int[word] = word_number
         word_number += 1
+        
+# Adding special tokens into the dict - <EOS> for end of string , <SOS> for start of string
+# <PAD> for user input , <OUT> for filtered out words
+tokens = ['<PAD>', '<EOS>', '<OUT>', '<SOS>']
+for token in tokens:
+    questionswords2int[token] = len(questionswords2int) + 1
+for token in tokens:
+    answerswords2int[token] = len(answerswords2int) + 1
 
+# Creating the inverse dictionary of the answerswords2int dict
+answersints2words = {w_i: w for w, w_i in answerswords2int.items()}
 
-
-
-
-
-
+# Adding the <SOS> and <EOS> at the start and end of each string respectively in the 
+# clean_answers list as, this is the target .
+for answer in clean_answer:
+    answer = '<SOS> ' + answer + ' <EOS>'
+    
+# Translating all the questions and answers into their respective unique integers.
+# and Replacing the words which were filtered out by value of '<OUT>'
+questions_into_ints = []
+for question in clean_questions:
+    ints = []
+    for word in question.split():
+        if word not in questionswords2int:
+            ints.append(questionswords2int['<OUT>'])
+        else:
+            ints.append(questionswords2int[word])
+    questions_into_ints.append(ints)
+answers_into_ints = []
+for answer in clean_answer:
+    ints = []
+    for word in answer.split():
+        if word not in answerswords2int:
+            ints.append(answerswords2int['<OUT>'])
+        else:
+            ints.append(answerswords2int[word])
+    answers_into_ints.append(ints)
+    
+# Sorting questions and answers by their lenghts to optimise the traning process
+sorted_clean_questions = []
+sorted_clean_answers = []
+for length in range(1, 26):
+    for i in enumerate(questions_into_ints):
+        if len(i[1]) == length:
+            sorted_clean_questions.append(questions_into_ints[i[0]])
+            sorted_clean_answers.append(answers_into_ints[i[0]])
 
 
 
