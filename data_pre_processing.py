@@ -7,7 +7,7 @@ Created on Thu Jan 17 20:16:26 2019
 
 import numpy as np
 import pandas as pd
-from data-cleaning import clean_text
+from data_cleaning import clean_text
 
 lines = open('cornell movie-dialogs corpus/movie_lines.txt', encoding = 'utf-8', errors='ignore').read().split('\n')
 conversations = open('cornell movie-dialogs corpus/movie_conversations.txt', encoding = 'utf-8', errors='ignore').read().split('\n')
@@ -82,8 +82,8 @@ answersints2words = {w_i: w for w, w_i in answerswords2int.items()}
 
 # Adding the <SOS> and <EOS> at the start and end of each string respectively in the 
 # clean_answers list as, this is the target .
-for answer in clean_answer:
-    answer = '<SOS> ' + answer + ' <EOS>'
+for i in range(len(clean_answer) - 1):
+    clean_answer[i] = clean_answer[i] + ' <EOS>'
     
 # Translating all the questions and answers into their respective unique integers.
 # and Replacing the words which were filtered out by value of '<OUT>'
